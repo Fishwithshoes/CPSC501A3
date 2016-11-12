@@ -23,9 +23,11 @@ public class UserInterface {
 			selection = input.nextInt();
 		} catch (InputMismatchException e) {	//is int?
 			System.out.println("Please make a valid selection (1-4)");	//Better error handling
+			//return displayTypeSelect(); //Broken?
 		}
 		if((selection < 1) || (selection > 4)) {	//is [1-4]
 			System.out.println("Please make a valid selection (1-4)");	//Better error handling
+			return displayTypeSelect(); //Works?
 		}
 		return selection;
 	}

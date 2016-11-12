@@ -17,7 +17,7 @@ public class Serializer {
 		Element root = new Element("serialized");
 		Element object = new Element("object");
 		object.setAttribute("class", inObj.getClass().getName());
-		object.setAttribute("id", Integer.toHexString(hashCode()));
+		object.setAttribute("id", Integer.toHexString(inObj.hashCode()));
 		
 		Field [] decFields = inObj.getClass().getDeclaredFields();
 		for (int i = 0; i < decFields.length; i++) {

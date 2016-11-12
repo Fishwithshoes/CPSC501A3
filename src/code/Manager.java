@@ -16,6 +16,9 @@ public class Manager {
 		obj = UI.createObj(typeSelected);
 		Serializer ser = new Serializer();
 		Document objXML = ser.serialize(obj);
+		Deserializer deSer = new Deserializer();
+		Object newObj = new Object();
+		newObj = deSer.deserialize(objXML);
 		
 	}
 }
