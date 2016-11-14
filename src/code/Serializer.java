@@ -11,7 +11,7 @@ import org.jdom2.output.XMLOutputter;
 public class Serializer {
 	Document doc;
 	Element root;
-	HashMap<Class<?>, Integer> serialMap = new HashMap<Class<?>, Integer>();
+	HashMap<Integer, Element> serialMap = new HashMap<Integer, Element>();
 	
 	public Serializer() {
 		doc = new Document();
@@ -23,7 +23,11 @@ public class Serializer {
 		Element object = new Element("object");
 		object.setAttribute("class", inObj.getClass().getName());
 		object.setAttribute("id", Integer.toHexString(inObj.hashCode()));
-		root.addContent(object);
+		if (serialMap.containsKey(inObj.hashCode()) == false) {
+			serialMap.put(inObj.hashCode(), object);
+			root.addContent(object);
+		}
+
 		
 		Field [] decFields = inObj.getClass().getDeclaredFields();
 		
