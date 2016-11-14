@@ -33,12 +33,12 @@ public class Serializer {
 			field.setAttribute("declaringclass", inObj.getClass().getName());
 			try {
 				decFields[i].setAccessible(true);
-				boolean temp = decFields[i].getType().isPrimitive();
+				//boolean temp = decFields[i].getType().isPrimitive();
 				if (decFields[i].getType().isPrimitive()) {
 					field.addContent(primHandler(inObj, decFields[i]));
 				}
 				else if (decFields[i].getType().isArray()) {
-					//field.addContent(arrayHandler(inObj,decFields[i]));
+					arrayHandler(inObj,decFields[i], field);
 				}
 				else {
 					field.addContent(refHandler(inObj, decFields[i]));
@@ -68,21 +68,25 @@ public class Serializer {
 		return value;	
 	}
 	
-	public Element arrayHandler(Object currObj, Field currField) {
+	public void arrayHandler(Object currObj, Field currField, Element field) {
 		try {
-			Object currArray = currField.get(currObj); //this is array, need to access element type for if/else
-			if (currField.get(currObj).getClass().isPrimitive()) {
-				for (int i; i < 
+			Object currArray = currField.get(currObj); //this is array, need to access element type for if/else\
+			if (currArray.getClass().getComponentType().isPrimitive()) {
+				for (int i = 0; i < Array.getLength(currArray); i++) {
 				Element value = new Element("value");
 				currField.setAccessible(true);
-				value.addContent(currField.get(currObj).toString());
-				return value;
+				value.addContent(Array.get(currArray, i).toString());
+				field.addContent(value);
+				}
 			}
-			else {
+			else {			
+				for (int i = 0; i < Array.getLength(currArray); i++) {
 				Element reference = new Element("reference");
 				currField.setAccessible(true);
-				reference.addContent(Integer.toHexString(currField.get(currObj).hashCode()));
-				seri
+				reference.addContent(Integer.toHexString(Array.get(currArray, i).hashCode()));
+				field.addContent(reference);
+				serialize(Array.get(currArray, i));
+				}
 			}
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
