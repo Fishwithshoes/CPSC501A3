@@ -16,5 +16,4 @@ public class PrimClass1 {
 	public void setI(int in) {
 		i = in;
 	}
-
 }
