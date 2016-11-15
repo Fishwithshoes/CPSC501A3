@@ -13,59 +13,94 @@ public class Deserializer {
 	}
 	
 	public Object deserialize(org.jdom2.Document document) {
-		Class<?> retClass;
-		Object retObj = null;
+		Object retObj = null;	
+		Element serial = document.getRootElement();
+		Element rootObj = serial.getChild("object");
+		retObj = deserializeElem(rootObj, serial);
+		return retObj;
+	}
+	
+	public Object primHandler (Field currField, String sValue) {
+		Class<?> currFieldType = currField.getType();
+		Object setValue = null;
+		if (currFieldType == byte.class) {
+			setValue = Byte.parseByte(sValue);
+		}
+		else if (currFieldType == short.class) {
+			setValue = Short.parseShort(sValue);
+		}
+		else if (currFieldType == int.class) {
+			setValue = Integer.parseInt(sValue);
+		}
+		else if (currFieldType == long.class) {
+			setValue = Long.parseLong(sValue);
+		}
+		else if (currFieldType == float.class) {
+			setValue = Float.parseFloat(sValue);
+		}
+		else if (currFieldType == double.class) {
+			setValue = Double.parseDouble(sValue);
+		}
+		else if (currFieldType == boolean.class) {
+			setValue = Boolean.parseBoolean(sValue);
+		}
+		else if (currFieldType == char.class) {
+			setValue = sValue.charAt(0);
+		}
 		
-		Element root = document.getRootElement();
-		Element object = root.getChild("object");
-		String objName = object.getAttributeValue("class");
-		List<Element> objFieldElems = object.getChildren();
-		try {
-			retClass = Class.forName(objName);
-			retObj = retClass.newInstance();
+		return setValue;
+	}
+	
+	public Object refHandler (Field currField, String refValue, Element root) {
+		Object setValue = null;
+		List<Element> allFieldElems = root.getChildren();
+		for (Element field : allFieldElems) {
+			if (field.getAttribute("id").toString().equals(refValue)) {
+				deserializeElem(field, root);
+				break;
+			}		
+		}
+		return setValue;
+	}
+	
+	public Object deserializeElem(Element parent, Element root) {
+		Object retObj = null;
+		String rootObjName = parent.getAttributeValue("class");
+		Class<?> retClass;
+			try {
+				retClass = Class.forName(rootObjName);
+				retObj = retClass.newInstance();
+			List<Element> objFieldElems = parent.getChildren();
 			for (Element field : objFieldElems) {
 				String fieldName = field.getAttributeValue("name");
 				Field currObjField = retClass.getDeclaredField(fieldName); //Field Object
 				String fieldValue = field.getValue(); //String rep of XML field value
+				currObjField.setAccessible(true);
 				if (currObjField.getType().isPrimitive())
-					primHandler(retObj, currObjField, fieldValue);
+					currObjField.set(retObj, primHandler(currObjField, fieldValue));
+				else if (currObjField.getType().isArray()) {} //fill in
+					//currObjField.set(retObj, arrayHandler(currObjField, fieldValue));	
+				else {
+					currObjField.set(retObj, refHandler(currObjField, fieldValue, root));
+				}
 			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		return retObj;
+			
 	}
-	
-	public void primHandler (Object currObj, Field currField, String sValue) {
-		Class<?> currFieldType = currField.getType();
-		Object setValue = null;
-		if (currFieldType == int.class) {
-			setValue = Integer.parseInt(sValue);
-		}
-		
-		try {
-			currField.setAccessible(true);
-			currField.set(currObj, setValue);
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 }

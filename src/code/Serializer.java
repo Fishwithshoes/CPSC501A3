@@ -3,6 +3,7 @@ package code;
 import java.io.IOException;
 import java.lang.reflect.*;
 import java.util.HashMap;
+import java.util.Collection;
 
 import org.jdom2.*;
 import org.jdom2.output.Format;
@@ -11,12 +12,13 @@ import org.jdom2.output.XMLOutputter;
 public class Serializer {
 	Document doc;
 	Element root;
-	HashMap<Integer, Element> serialMap = new HashMap<Integer, Element>();
+	HashMap<Integer, Element> serialMap;
 	
 	public Serializer() {
 		doc = new Document();
 		root = new Element("serialized");
 		doc.setRootElement(root); //namespace?
+		serialMap = new HashMap<Integer, Element>();
 	}
 	
 	public org.jdom2.Document serialize(Object inObj) {
@@ -41,13 +43,16 @@ public class Serializer {
 				if (decFields[i].getType().isPrimitive()) {
 					field.addContent(primHandler(inObj, decFields[i]));
 				}
-				else if (decFields[i].getType().isArray()) {
-					arrayHandler(inObj,decFields[i], field);
+				else if (decFields[i].getType().isArray() || decFields[i].get(inObj) instanceof Collection<?>) {
+					arrayHandler(inObj, decFields[i], field);
 				}
 				else {
 					field.addContent(refHandler(inObj, decFields[i]));
 				}
 			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -74,7 +79,10 @@ public class Serializer {
 	
 	public void arrayHandler(Object currObj, Field currField, Element field) {
 		try {
-			Object currArray = currField.get(currObj); //this is array, need to access element type for if/else\
+			Object currArray = currField.get(currObj);
+			if (currArray instanceof Collection<?>)
+				currArray = ((Collection<?>) currArray).toArray();
+
 			if (currArray.getClass().getComponentType().isPrimitive()) {
 				for (int i = 0; i < Array.getLength(currArray); i++) {
 				Element value = new Element("value");

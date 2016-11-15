@@ -49,7 +49,7 @@ public class UserInterface {
 		} catch (InputMismatchException e) {	//is int?
 			System.out.println("Please make a valid integer selection");	//Better error handling
 		}
-		currPrimObj.setI(value);
+		//currPrimObj.setI(value);
 		return currPrimObj;
 	}
 	
