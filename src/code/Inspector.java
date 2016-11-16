@@ -7,7 +7,7 @@ public class Inspector {
 
 	public void inspect(Object obj, boolean recursive){
 		Class<?> classObject = obj.getClass();
-		recurseMap.put(classObject.hashCode(), classObject);
+		recurseMap.put(obj.hashCode(), classObject);
 		displayClassIterInfo(classObject);
 		displayClassMethodInfo(classObject);
 		displayClassConstructorInfo(classObject);
@@ -375,7 +375,7 @@ public class Inspector {
 						for (int j = 0; j < Array.getLength(arrayObject); j++) {
 							newObject = Array.get(arrayObject, j);
 							if (newObject != null && newObject.getClass().isPrimitive() == false) {
-								if (currMap.containsKey(newObject.getClass().hashCode()) == false){ //check
+								if (currMap.containsKey(newObject.hashCode()) == false){ //check
 									inspect(newObject, recursive);
 							}
 						}
@@ -393,7 +393,7 @@ public class Inspector {
 				try {
 					newObject = fields[i].get(currObject);
 					if (newObject != null) {
-						if (currMap.containsKey(newObject.getClass().hashCode()) == false){ //check
+						if (currMap.containsKey(newObject.hashCode()) == false){ //check
 							inspect(newObject, recursive);
 						}
 					}

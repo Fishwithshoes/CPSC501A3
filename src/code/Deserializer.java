@@ -20,8 +20,7 @@ public class Deserializer {
 		return retObj;
 	}
 	
-	public Object primHandler (Field currField, String sValue) {
-		Class<?> currFieldType = currField.getType();
+	public Object primHandler (Class<?> currFieldType, String sValue) {
 		Object setValue = null;
 		if (currFieldType == byte.class) {
 			setValue = Byte.parseByte(sValue);
@@ -54,19 +53,30 @@ public class Deserializer {
 	public Object arrayHandler (Field currField, String refValue, Element root, Object currObject) {
 		Object setValue = null;
 		try {
-		setValue = currField.get(currObject);
+			currField.setAccessible(true);
+		setValue = currField.get(currObject); //Array.newInstance(currField.getType(), length); //be the array
 		List<Element> allFieldElems = root.getChildren();
 		for (Element field : allFieldElems) {
-			if (field.getAttribute("id").toString().equals(refValue)) {
-				List<Element> arrayElems = field.getChildren();
+			if (field.getAttribute("id").toString().contains(refValue)) {
+				List<Element> arrayElems = field.getChildren(); //all values
 				if (setValue.getClass().getComponentType().isPrimitive()) {
 					int i = 0;
 					for (Element elem : arrayElems) {
-						Array.set(setValue, i, primHandler(currField, elem.toString()));	
+						Object inValue = primHandler(setValue.getClass().getComponentType(), elem.getValue());
+						Array.set(setValue, i, inValue);
+						i++;					
 					}
 				}
+				else {
+					int i = 0;
+					for (Element elem : arrayElems) {
+						Object inValue = refHandler(elem.getValue(), root);
+						Array.set(setValue, i, inValue);
+						i++;					
+					}
+					
+				}
 			}
-			break;
 		}
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -74,17 +84,19 @@ public class Deserializer {
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} //catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		//}
 		return setValue;
 	}
 	
-	public Object refHandler (Field currField, String refValue, Element root) {
+	public Object refHandler (String refValue, Element root) {
 		Object setValue = null;
 		List<Element> allFieldElems = root.getChildren();
 		for (Element field : allFieldElems) {
-			if (field.getAttribute("id").toString().equals(refValue)) {
-				deserializeElem(field, root);
-				break;
+			if (field.getAttribute("id").toString().contains(refValue)) {
+				setValue = deserializeElem(field, root);
 			}		
 		}
 		return setValue;
@@ -97,21 +109,22 @@ public class Deserializer {
 			try {
 				retClass = Class.forName(rootObjName);
 				retObj = retClass.newInstance();
-			List<Element> objFieldElems = parent.getChildren();
-			for (Element field : objFieldElems) {
-				String fieldName = field.getAttributeValue("name");
-				Field currObjField = retClass.getDeclaredField(fieldName); //Field Object
-				String fieldValue = field.getValue(); //String rep of XML field value
-				currObjField.setAccessible(true);
-				if (currObjField.getType().isPrimitive())
-					currObjField.set(retObj, primHandler(currObjField, fieldValue));
-				else if (currObjField.getType().isArray()) {
-					currObjField.set(retObj, arrayHandler(currObjField, fieldValue, root, retObj));
+				List<Element> objFieldElems = parent.getChildren();
+				for (Element field : objFieldElems) {
+					String fieldName = field.getAttributeValue("name");
+					Field currObjField = retClass.getDeclaredField(fieldName); //Field Object
+					Class <?> currObjFieldType = currObjField.getType();
+					String fieldValue = field.getValue(); //String rep of XML field value
+					currObjField.setAccessible(true);
+					if (currObjField.getType().isPrimitive())
+						currObjField.set(retObj, primHandler(currObjFieldType, fieldValue));
+					else if (currObjField.getType().isArray()) {
+						currObjField.set(retObj, arrayHandler(currObjField, fieldValue, root, retObj));
+					}
+					else {
+						currObjField.set(retObj, refHandler(fieldValue, root));
+					}
 				}
-				else {
-					currObjField.set(retObj, refHandler(currObjField, fieldValue, root));
-				}
-			}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
