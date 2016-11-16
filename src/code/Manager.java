@@ -19,9 +19,9 @@ public class Manager {
 		typeSelected = UI.displayTypeSelect();*/
 		Object obj = new Object();
 		//obj = UI.createObj(typeSelected);
-		obj = new PrimClass1();//new ArrayClass1();
-		//Serializer ser = new Serializer();
-		//Document objXML = ser.serialize(obj);
+		obj = new ArrayClass1();//new PrimClass1();//
+		Serializer ser = new Serializer();
+		Document objXML = ser.serialize(obj);
 		
 		/*XMLOutputter XMLOut = new XMLOutputter(Format.getPrettyFormat());
 		try {
@@ -31,10 +31,10 @@ public class Manager {
 			e.printStackTrace();
 		}*/
 		
-		//Deserializer deSer = new Deserializer();
-		//Object newObj = new Object();
-		//newObj = deSer.deserialize(objXML);
+		Deserializer deSer = new Deserializer();
+		Object newObj = new Object();
+		newObj = deSer.deserialize(objXML);
 		Inspector inspec = new Inspector();
-		inspec.inspect(obj, true);
+		inspec.inspect(obj, false);
 	}
 }

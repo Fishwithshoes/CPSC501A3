@@ -51,6 +51,33 @@ public class Deserializer {
 		return setValue;
 	}
 	
+	public Object arrayHandler (Field currField, String refValue, Element root, Object currObject) {
+		Object setValue = null;
+		try {
+		setValue = currField.get(currObject);
+		List<Element> allFieldElems = root.getChildren();
+		for (Element field : allFieldElems) {
+			if (field.getAttribute("id").toString().equals(refValue)) {
+				List<Element> arrayElems = field.getChildren();
+				if (setValue.getClass().getComponentType().isPrimitive()) {
+					int i = 0;
+					for (Element elem : arrayElems) {
+						Array.set(setValue, i, primHandler(currField, elem.toString()));	
+					}
+				}
+			}
+			break;
+		}
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return setValue;
+	}
+	
 	public Object refHandler (Field currField, String refValue, Element root) {
 		Object setValue = null;
 		List<Element> allFieldElems = root.getChildren();
@@ -78,8 +105,9 @@ public class Deserializer {
 				currObjField.setAccessible(true);
 				if (currObjField.getType().isPrimitive())
 					currObjField.set(retObj, primHandler(currObjField, fieldValue));
-				else if (currObjField.getType().isArray()) {} //fill in
-					//currObjField.set(retObj, arrayHandler(currObjField, fieldValue));	
+				else if (currObjField.getType().isArray()) {
+					currObjField.set(retObj, arrayHandler(currObjField, fieldValue, root, retObj));
+				}
 				else {
 					currObjField.set(retObj, refHandler(currObjField, fieldValue, root));
 				}

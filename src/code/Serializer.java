@@ -29,8 +29,13 @@ public class Serializer {
 			serialMap.put(inObj.hashCode(), object);
 			root.addContent(object);
 		}
-
 		
+		if (inObj.getClass().isArray()) {
+			object.setAttribute("length", Integer.toString(Array.getLength(inObj)));
+			arrayHandler(inObj, object);
+		}
+		
+		else {
 		Field [] decFields = inObj.getClass().getDeclaredFields();
 		
 		for (int i = 0; i < decFields.length; i++) {
@@ -39,27 +44,52 @@ public class Serializer {
 			field.setAttribute("declaringclass", inObj.getClass().getName());
 			try {
 				decFields[i].setAccessible(true);
-				//boolean temp = decFields[i].getType().isPrimitive();
 				if (decFields[i].getType().isPrimitive()) {
 					field.addContent(primHandler(inObj, decFields[i]));
-				}
-				else if (decFields[i].getType().isArray() || decFields[i].get(inObj) instanceof Collection<?>) {
-					arrayHandler(inObj, decFields[i], field);
 				}
 				else {
 					field.addContent(refHandler(inObj, decFields[i]));
 				}
+			
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IllegalAccessException e) {
+			} /*catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			object.addContent(field);
+		}
 		}
 		
 		return doc;
+	}
+	
+	public void arrayHandler(Object currObj, Element field) {
+		try {
+			//Object currArray = currField.get(currObj);
+
+			if (currObj.getClass().getComponentType().isPrimitive()) {
+				for (int i = 0; i < Array.getLength(currObj); i++) {
+				Element value = new Element("value");
+				//currField.setAccessible(true);
+				value.addContent(Array.get(currObj, i).toString());
+				field.addContent(value);
+				}
+			}
+			else {			
+				for (int i = 0; i < Array.getLength(currObj); i++) {
+				Element reference = new Element("reference");
+				//currField.setAccessible(true);
+				reference.addContent(Integer.toHexString(Array.get(currObj, i).hashCode()));
+				field.addContent(reference);
+				serialize(Array.get(currObj, i));
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public Element primHandler(Object currObj, Field currField) {
@@ -77,52 +107,12 @@ public class Serializer {
 		return value;	
 	}
 	
-	public void arrayHandler(Object currObj, Field currField, Element field) {
-		try {
-			Object currArray = currField.get(currObj);
-			if (currArray instanceof Collection<?>)
-				currArray = ((Collection<?>) currArray).toArray();
-
-			if (currArray.getClass().getComponentType().isPrimitive()) {
-				for (int i = 0; i < Array.getLength(currArray); i++) {
-				Element value = new Element("value");
-				currField.setAccessible(true);
-				value.addContent(Array.get(currArray, i).toString());
-				field.addContent(value);
-				}
-			}
-			else {			
-				for (int i = 0; i < Array.getLength(currArray); i++) {
-				Element reference = new Element("reference");
-				currField.setAccessible(true);
-				reference.addContent(Integer.toHexString(Array.get(currArray, i).hashCode()));
-				field.addContent(reference);
-				serialize(Array.get(currArray, i));
-				}
-			}
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public Element refHandler(Object currObj, Field currField) {
 		Element reference = new Element("reference");
 		try {
 			currField.setAccessible(true);
 			reference.addContent(Integer.toHexString(currField.get(currObj).hashCode()));
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-		serialize(currField.get(currObj));
+			serialize(currField.get(currObj));
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
