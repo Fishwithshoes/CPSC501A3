@@ -1,0 +1,28 @@
+Extracted Method primHandler() from serialize()
+due to long method. New method will generate Element from 
+current object and primitive field
+
+Extracted Method arrayHandler() from serialize()
+due to long method. New method will generate Element from 
+current object and array field
+
+Extracted Method refHandler() from serialize()
+due to long method. New method will generate Element from 
+current object and reference field
+
+Extracted Method primHandler() from deserializeElem()
+due to long method. New method will generate correct 
+primitive based on class and string value
+
+Extracted Method arrayHandler() from deserializeElem()
+due to long method. New method will generate complete
+array or Collection object from field, string, Element
+and Objcet value
+
+Renamed Method arrayCollHandler() from arrayHandler()
+due to unclear name. Function now handles both cases.
+
+Extracted Method createObj() from displayTypeSelect()
+due to long method. New method handle Objcet creation
+based on user input
+

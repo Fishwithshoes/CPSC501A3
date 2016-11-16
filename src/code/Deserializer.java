@@ -52,7 +52,7 @@ public class Deserializer {
 		return setValue;
 	}
 	
-	public Object arrayHandler (Field currField, String refValue, Element root, Object currObject) {
+	public Object arrayCollHandler (Field currField, String refValue, Element root, Object currObject) {
 		Object setValue = null;
 		boolean aCollection = false;
 		try {
@@ -128,7 +128,7 @@ public class Deserializer {
 					if (currObjField.getType().isPrimitive())
 						currObjField.set(retObj, primHandler(currObjFieldType, fieldValue));
 					else if (currObjField.getType().isArray() || Collection.class.isAssignableFrom(currObjField.getType())) {
-						currObjField.set(retObj, arrayHandler(currObjField, fieldValue, root, retObj));
+						currObjField.set(retObj, arrayCollHandler(currObjField, fieldValue, root, retObj));
 					}
 					else {
 						currObjField.set(retObj, refHandler(fieldValue, root));

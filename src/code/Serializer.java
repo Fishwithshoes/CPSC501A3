@@ -54,14 +54,10 @@ public class Serializer {
 				else {
 					field.addContent(refHandler(inObj, decFields[i]));
 				}
-			
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} /*catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
 			object.addContent(field);
 		}
 		}
@@ -71,12 +67,10 @@ public class Serializer {
 	
 	public void arrayHandler(Object currObj, Element field) {
 		try {
-			//Object currArray = currField.get(currObj);
 
 			if (currObj.getClass().getComponentType().isPrimitive()) {
 				for (int i = 0; i < Array.getLength(currObj); i++) {
 				Element value = new Element("value");
-				//currField.setAccessible(true);
 				value.addContent(Array.get(currObj, i).toString());
 				field.addContent(value);
 				}
@@ -84,7 +78,6 @@ public class Serializer {
 			else {			
 				for (int i = 0; i < Array.getLength(currObj); i++) {
 				Element reference = new Element("reference");
-				//currField.setAccessible(true);
 				reference.addContent(Integer.toHexString(Array.get(currObj, i).hashCode()));
 				field.addContent(reference);
 				serialize(Array.get(currObj, i));
