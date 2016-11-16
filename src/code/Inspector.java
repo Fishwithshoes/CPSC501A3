@@ -12,7 +12,7 @@ public class Inspector {
 		displayClassMethodInfo(classObject);
 		displayClassConstructorInfo(classObject);
 		displayClassFieldInfo(classObject, obj);
-		displaySuperClass(obj, classObject, recurseMap);
+		//displaySuperClass(obj, classObject, recurseMap);
 		if (recursive == true){
 			recurseOnFieldObjects(obj, recursive, recurseMap);
 		}
@@ -392,8 +392,8 @@ public class Inspector {
 			else {
 				try {
 					newObject = fields[i].get(currObject);
-					if (newObject != null) {
-						if (currMap.containsKey(newObject.hashCode()) == false){ //check
+					if (newObject != null && newObject.getClass().isPrimitive() == false) {
+						if (currMap.containsKey(newObject.hashCode()) == false) {
 							inspect(newObject, recursive);
 						}
 					}
