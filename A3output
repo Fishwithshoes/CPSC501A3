@@ -3,26 +3,14 @@ Please select the type of Object you wish to serialize:
 2) Primitive Array Object
 3) Reference Only Object
 4) Reference Array Object
-5) Exit
-Please fill out the information for primClassA: 
-Please enter a value for the Object's integer field: 
-Please enter a value for the Object's character field: 
-Please enter a value for the Object's float field: 
-Please fill out the information for primClassB: 
+5) Reference Collection Object
+6) Exit
 Please enter a value for the Object's integer field: 
 Please enter a value for the Object's character field: 
 Please enter a value for the Object's float field: 
 <?xml version="1.0" encoding="UTF-8"?>
 <serialized>
-  <object class="obj.RefClass1" id="1f32e575">
-    <field name="primClassA" declaringclass="obj.RefClass1">
-      <reference>2ff4acd0</reference>
-    </field>
-    <field name="primClassB" declaringclass="obj.RefClass1">
-      <reference>5caf905d</reference>
-    </field>
-  </object>
-  <object class="obj.PrimClass1" id="2ff4acd0">
+  <object class="obj.PrimClass1" id="1f32e575">
     <field name="i" declaringclass="obj.PrimClass1">
       <value>1</value>
     </field>
@@ -30,84 +18,16 @@ Please enter a value for the Object's float field:
       <value>c</value>
     </field>
     <field name="f" declaringclass="obj.PrimClass1">
-      <value>4.0</value>
-    </field>
-  </object>
-  <object class="obj.PrimClass1" id="5caf905d">
-    <field name="i" declaringclass="obj.PrimClass1">
-      <value>2</value>
-    </field>
-    <field name="c" declaringclass="obj.PrimClass1">
-      <value>f</value>
-    </field>
-    <field name="f" declaringclass="obj.PrimClass1">
-      <value>5.0</value>
+      <value>3.0</value>
     </field>
   </object>
 </serialized>
-******NEW CLASS******
-Class: obj.RefClass1
-Direct Superclass: java.lang.Object
-Interfaces:
-
-***Methods***
-
-Method Name: setB
-Exceptions: 
-Parameter Types: 
-obj.PrimClass1
-Return Type: void
-Modifiers: public
-
-Method Name: setA
-Exceptions: 
-Parameter Types: 
-obj.PrimClass1
-Return Type: void
-Modifiers: public
-
-Method Name: getA
-Exceptions: 
-Parameter Types: 
-Return Type: obj.PrimClass1
-Modifiers: public
-
-Method Name: getB
-Exceptions: 
-Parameter Types: 
-Return Type: obj.PrimClass1
-Modifiers: public
-
-***Constructors***
-
-Parameter Types: 
-Modifiers: public
-
-***Fields***
-
-Field Name: primClassA
-Field Type: obj.PrimClass1
-Field Modifiers: private
-Field Value: obj.PrimClass1@27d6c5e0
-
-Field Name: primClassB
-Field Type: obj.PrimClass1
-Field Modifiers: private
-Field Value: obj.PrimClass1@4f3f5b24
-
 ******NEW CLASS******
 Class: obj.PrimClass1
 Direct Superclass: java.lang.Object
 Interfaces:
 
 ***Methods***
-
-Method Name: setF
-Exceptions: 
-Parameter Types: 
-float
-Return Type: void
-Modifiers: public
 
 Method Name: setC
 Exceptions: 
@@ -120,6 +40,13 @@ Method Name: setI
 Exceptions: 
 Parameter Types: 
 int
+Return Type: void
+Modifiers: public
+
+Method Name: setF
+Exceptions: 
+Parameter Types: 
+float
 Return Type: void
 Modifiers: public
 
@@ -143,55 +70,28 @@ Field Value: c
 Field Name: f
 Field Type: float
 Field Modifiers: private
-Field Value: 4.0
+Field Value: 3.0
 
-******NEW CLASS******
-Class: obj.PrimClass1
-Direct Superclass: java.lang.Object
-Interfaces:
-
-***Methods***
-
-Method Name: setF
-Exceptions: 
-Parameter Types: 
-float
-Return Type: void
-Modifiers: public
-
-Method Name: setC
-Exceptions: 
-Parameter Types: 
-char
-Return Type: void
-Modifiers: public
-
-Method Name: setI
-Exceptions: 
-Parameter Types: 
-int
-Return Type: void
-Modifiers: public
-
-***Constructors***
-
-Parameter Types: 
-Modifiers: public
-
-***Fields***
-
-Field Name: i
-Field Type: int
-Field Modifiers: private
-Field Value: 2
-
-Field Name: c
-Field Type: char
-Field Modifiers: private
-Field Value: f
-
-Field Name: f
-Field Type: float
-Field Modifiers: private
-Field Value: 5.0
-
+Please select the type of Object you wish to serialize:
+1) Primitive Only Object
+2) Primitive Array Object
+3) Reference Only Object
+4) Reference Array Object
+5) Reference Collection Object
+6) Exit
+***Please make a valid selection (1-5)***
+Please select the type of Object you wish to serialize:
+1) Primitive Only Object
+2) Primitive Array Object
+3) Reference Only Object
+4) Reference Array Object
+5) Reference Collection Object
+6) Exit
+***Please make a valid selection (1-5)***
+Please select the type of Object you wish to serialize:
+1) Primitive Only Object
+2) Primitive Array Object
+3) Reference Only Object
+4) Reference Array Object
+5) Reference Collection Object
+6) Exit

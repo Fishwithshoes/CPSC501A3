@@ -30,6 +30,10 @@ public class Serializer {
 			root.addContent(object);
 		}
 		
+		if (inObj instanceof Collection<?>) {
+			inObj = ((Collection<?>) inObj).toArray();
+		}
+		
 		if (inObj.getClass().isArray()) {
 			object.setAttribute("length", Integer.toString(Array.getLength(inObj)));
 			arrayHandler(inObj, object);

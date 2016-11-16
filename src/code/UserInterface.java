@@ -20,14 +20,15 @@ public class UserInterface {
 					+ "2) Primitive Array Object\n"
 					+ "3) Reference Only Object\n"
 					+ "4) Reference Array Object\n"
-					+ "5) Exit");
+					+ "5) Reference Collection Object\n"
+					+ "6) Exit");
 			
 			try {
 				selection = input.nextInt();
 			} catch (InputMismatchException e) {	//is int?
 				input.next();
 			}
-			if((selection < 1) || (selection > 5)) {	//is [1-4]
+			if((selection < 1) || (selection > 6)) {	//is [1-4]
 				System.out.println("***Please make a valid selection (1-5)***");	//Better error handling
 			}
 			else {
@@ -56,6 +57,11 @@ public class UserInterface {
 		else if (type == 4) {
 			RefArrayClass1 returnObject = new RefArrayClass1();
 			returnObject = fillRefArrayClass1(returnObject);
+			return returnObject;
+		}
+		else if (type == 5) {
+			RefCollClass1 returnObject = new RefCollClass1();
+			returnObject = fillRefCollClass1(returnObject);
 			return returnObject;
 		}
 		else {
@@ -137,6 +143,17 @@ public class UserInterface {
 		currRefArrObj.setArr(fillArrayClass1(currRefArrObj.getArr()));
 		
 		return currRefArrObj;
+	}
+	
+	public RefCollClass1 fillRefCollClass1(RefCollClass1 currRefCollObj) {
+		PrimClass1 collPrimRef = new PrimClass1();
+		ArrayClass1 collArrayRef = new ArrayClass1();
+		System.out.println("Please fill out the information for collPrimRef: ");
+		currRefCollObj.setCollPrim(fillPrimClass1(collPrimRef));
+		System.out.println("Please fill out the information for collArrayRef: ");
+		currRefCollObj.setCollArr(fillArrayClass1(collArrayRef));
+		
+		return currRefCollObj;
 	}
 	
 }

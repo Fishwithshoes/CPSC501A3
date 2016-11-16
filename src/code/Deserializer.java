@@ -2,6 +2,8 @@ package code;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
+import obj.*;
 
 import org.jdom2.*;
 import java.lang.reflect.*;
@@ -52,14 +54,16 @@ public class Deserializer {
 	
 	public Object arrayHandler (Field currField, String refValue, Element root, Object currObject) {
 		Object setValue = null;
+		boolean aCollection = false;
 		try {
 			currField.setAccessible(true);
-		setValue = currField.get(currObject); //Array.newInstance(currField.getType(), length); //be the array
+		setValue = currField.get(currObject);
+		aCollection = (setValue instanceof Collection<?>);
 		List<Element> allFieldElems = root.getChildren();
 		for (Element field : allFieldElems) {
 			if (field.getAttribute("id").toString().contains(refValue)) {
 				List<Element> arrayElems = field.getChildren(); //all values
-				if (setValue.getClass().getComponentType().isPrimitive()) {
+				if (!(aCollection) && setValue.getClass().getComponentType().isPrimitive() ) {
 					int i = 0;
 					for (Element elem : arrayElems) {
 						Object inValue = primHandler(setValue.getClass().getComponentType(), elem.getValue());
@@ -71,8 +75,13 @@ public class Deserializer {
 					int i = 0;
 					for (Element elem : arrayElems) {
 						Object inValue = refHandler(elem.getValue(), root);
-						Array.set(setValue, i, inValue);
-						i++;					
+						if (aCollection) {
+							((Collection<Object>) setValue).add(inValue);
+						}
+						else {
+							Array.set(setValue, i, inValue);
+							i++;
+						}
 					}
 					
 				}
@@ -118,7 +127,7 @@ public class Deserializer {
 					currObjField.setAccessible(true);
 					if (currObjField.getType().isPrimitive())
 						currObjField.set(retObj, primHandler(currObjFieldType, fieldValue));
-					else if (currObjField.getType().isArray()) {
+					else if (currObjField.getType().isArray() || Collection.class.isAssignableFrom(currObjField.getType())) {
 						currObjField.set(retObj, arrayHandler(currObjField, fieldValue, root, retObj));
 					}
 					else {
