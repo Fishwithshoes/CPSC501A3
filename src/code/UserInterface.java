@@ -20,15 +20,14 @@ public class UserInterface {
 					+ "2) Primitive Array Object\n"
 					+ "3) Reference Only Object\n"
 					+ "4) Reference Array Object\n"
-					+ "5) Reference Collection Object\n"
-					+ "6) Exit");
+					+ "5) Reference Collection Object");
 			
 			try {
 				selection = input.nextInt();
 			} catch (InputMismatchException e) {	//is int?
 				input.next();
 			}
-			if((selection < 1) || (selection > 6)) {	//is [1-4]
+			if((selection < 1) || (selection > 5)) {	//is [1-4]
 				System.out.println("***Please make a valid selection (1-5)***");	//Better error handling
 			}
 			else {
